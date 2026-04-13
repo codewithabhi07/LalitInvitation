@@ -312,7 +312,11 @@
             color: var(--tpl-primary);
             line-height: 1;
             text-shadow: 2px 2px 0px var(--tpl-secondary);
+            transition: font-size 0.3s ease;
         }
+
+        #out-groom { font-size: var(--groom-size, 6.5rem); }
+        #out-bride { font-size: var(--bride-size, 6.5rem); }
 
         .c-weds {
             font-family: var(--tpl-font-heading);
@@ -343,8 +347,10 @@
         }
 
         .c-events-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
-        .c-event-name { font-weight: 800; color: var(--tpl-primary); font-size: 1.4rem; text-transform: uppercase; }
-        .c-event-time { color: var(--tpl-text); font-size: 1.1rem; font-weight: 500; }
+        .c-event-item { margin-bottom: 10px; }
+        .c-event-name { font-weight: 800; color: var(--tpl-primary); font-size: 1.3rem; text-transform: uppercase; }
+        .c-event-date { color: var(--tpl-accent); font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+        .c-event-time { color: var(--tpl-text); font-size: 1rem; font-weight: 500; }
 
         .c-date {
             font-family: var(--tpl-font-heading);
@@ -563,6 +569,10 @@
                         <input type="text" id="in-groom" value="Arjun">
                     </div>
                     <div class="input-group">
+                        <label>Groom's Name Font Size (rem)</label>
+                        <input type="range" id="in-groom-size" min="3" max="10" step="0.1" value="6.5">
+                    </div>
+                    <div class="input-group">
                         <label>Groom's Parents/Family</label>
                         <input type="text" id="in-groom-family" value="Smt. & Shri Rajesh Sharma">
                     </div>
@@ -570,6 +580,10 @@
                     <div class="input-group">
                         <label>Bride's Name</label>
                         <input type="text" id="in-bride" value="Ananya">
+                    </div>
+                    <div class="input-group">
+                        <label>Bride's Name Font Size (rem)</label>
+                        <input type="range" id="in-bride-size" min="3" max="10" step="0.1" value="6.5">
                     </div>
                     <div class="input-group">
                         <label>Bride's Parents/Family</label>
@@ -689,10 +703,10 @@
 
     <script>
         let defaultEvents = [
-            { name: "Ganesh Puja", time: "10:00 AM" },
-            { name: "Haldi & Mehendi", time: "02:00 PM" },
-            { name: "Sangeet", time: "07:00 PM" },
-            { name: "Wedding Ceremony", time: "11:30 PM" }
+            { name: "Ganesh Puja", date: "12th Dec", time: "10:00 AM" },
+            { name: "Haldi & Mehendi", date: "13th Dec", time: "02:00 PM" },
+            { name: "Sangeet", date: "13th Dec", time: "07:00 PM" },
+            { name: "Wedding Ceremony", date: "14th Dec", time: "11:30 PM" }
         ];
 
         const patrikaCard = document.getElementById('patrika-card');
@@ -712,40 +726,115 @@
         };
 
         function init() {
+            // Load draft first
+            loadDraft();
+
             for (const [inId, outId] of Object.entries(simpleInputs)) {
                 const inputEl = document.getElementById(inId);
                 const outEl = document.getElementById(outId);
-                inputEl.addEventListener('input', () => {
+                
+                const updateFn = () => {
                     if(inputEl.tagName === 'TEXTAREA') {
                         outEl.innerHTML = inputEl.value.replace(/\n/g, '<br>');
                     } else {
                         outEl.innerText = inputEl.value;
                     }
-                });
+                    saveDraft();
+                };
+
+                inputEl.addEventListener('input', updateFn);
+                // Initial update for loaded content
+                updateFn();
             }
 
             document.getElementById('in-theme').addEventListener('change', (e) => {
                 patrikaCard.className = `patrika-card ${e.target.value}`;
+                saveDraft();
             });
 
-            // Advanced Styling
-            document.getElementById('in-bg-color').addEventListener('input', (e) => {
-                patrikaCard.style.setProperty('--tpl-bg', e.target.value);
-            });
-            document.getElementById('in-primary-color').addEventListener('input', (e) => {
-                patrikaCard.style.setProperty('--tpl-primary', e.target.value);
-            });
-            document.getElementById('in-secondary-color').addEventListener('input', (e) => {
-                patrikaCard.style.setProperty('--tpl-secondary', e.target.value);
-            });
-            document.getElementById('in-bg-texture').addEventListener('change', (e) => {
-                patrikaCard.style.setProperty('--tpl-bg-image', e.target.value);
+            // Advanced Styling & Font Sizes
+            const advanced = ['in-bg-color', 'in-primary-color', 'in-secondary-color', 'in-bg-texture', 'in-groom-size', 'in-bride-size'];
+            advanced.forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', () => {
+                    applyAdvancedStyles();
+                    saveDraft();
+                });
             });
 
             renderEventsForm();
             renderEventsPreview();
+            applyAdvancedStyles();
+            
             window.addEventListener('resize', autoScalePreview);
             setTimeout(autoScalePreview, 100);
+        }
+
+        function applyAdvancedStyles() {
+            patrikaCard.style.setProperty('--tpl-bg', document.getElementById('in-bg-color').value);
+            patrikaCard.style.setProperty('--tpl-primary', document.getElementById('in-primary-color').value);
+            patrikaCard.style.setProperty('--tpl-secondary', document.getElementById('in-secondary-color').value);
+            patrikaCard.style.setProperty('--tpl-bg-image', document.getElementById('in-bg-texture').value);
+            
+            // Name Sizes
+            patrikaCard.style.setProperty('--groom-size', document.getElementById('in-groom-size').value + 'rem');
+            patrikaCard.style.setProperty('--bride-size', document.getElementById('in-bride-size').value + 'rem');
+        }
+
+        function saveDraft() {
+            const draft = {
+                simple: {},
+                advanced: {
+                    theme: document.getElementById('in-theme').value,
+                    bgColor: document.getElementById('in-bg-color').value,
+                    primaryColor: document.getElementById('in-primary-color').value,
+                    secondaryColor: document.getElementById('in-secondary-color').value,
+                    bgTexture: document.getElementById('in-bg-texture').value,
+                    groomSize: document.getElementById('in-groom-size').value,
+                    brideSize: document.getElementById('in-bride-size').value
+                },
+                events: defaultEvents
+            };
+
+            for (const inId in simpleInputs) {
+                draft.simple[inId] = document.getElementById(inId).value;
+            }
+
+            localStorage.setItem('patrika_draft', JSON.stringify(draft));
+        }
+
+        function loadDraft() {
+            const saved = localStorage.getItem('patrika_draft');
+            if (!saved) return;
+
+            try {
+                const draft = JSON.parse(saved);
+                
+                // Simple Inputs
+                for (const [id, val] of Object.entries(draft.simple)) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                }
+
+                // Advanced
+                if (draft.advanced) {
+                    document.getElementById('in-theme').value = draft.advanced.theme || 'theme-royal';
+                    document.getElementById('in-bg-color').value = draft.advanced.bgColor || '#fffcf0';
+                    document.getElementById('in-primary-color').value = draft.advanced.primaryColor || '#800000';
+                    document.getElementById('in-secondary-color').value = draft.advanced.secondaryColor || '#d4af37';
+                    document.getElementById('in-bg-texture').value = draft.advanced.bgTexture || "url('https://www.transparenttextures.com/patterns/handmade-paper.png')";
+                    
+                    document.getElementById('in-groom-size').value = draft.advanced.groomSize || '6.5';
+                    document.getElementById('in-bride-size').value = draft.advanced.brideSize || '6.5';
+
+                    patrikaCard.className = `patrika-card ${document.getElementById('in-theme').value}`;
+                }
+
+                if (draft.events) defaultEvents = draft.events;
+
+            } catch (e) {
+                console.error("Failed to load draft", e);
+            }
         }
 
         function renderEventsForm() {
@@ -756,8 +845,9 @@
                 item.style = 'display:flex; gap:10px; margin-bottom:10px; background:#111; padding:10px; border-radius:8px; border:1px solid #333;';
                 item.innerHTML = `
                     <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
-                        <input type="text" value="${ev.name}" oninput="updateEvent(${index}, 'name', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
-                        <input type="text" value="${ev.time}" oninput="updateEvent(${index}, 'time', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
+                        <input type="text" value="${ev.name}" placeholder="Event Name" oninput="updateEvent(${index}, 'name', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
+                        <input type="text" value="${ev.date}" placeholder="Date" oninput="updateEvent(${index}, 'date', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
+                        <input type="text" value="${ev.time}" placeholder="Time" oninput="updateEvent(${index}, 'time', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
                     </div>
                     <button onclick="removeEvent(${index})" style="background:#4a148c; color:white; border:none; width:30px; height:30px; border-radius:4px; cursor:pointer;">X</button>
                 `;
@@ -771,6 +861,7 @@
                 outEvents.innerHTML += `
                     <div class="c-event-item">
                         <div class="c-event-name">${ev.name}</div>
+                        <div class="c-event-date">${ev.date}</div>
                         <div class="c-event-time">${ev.time}</div>
                     </div>
                 `;
@@ -780,18 +871,21 @@
         function updateEvent(index, key, value) {
             defaultEvents[index][key] = value;
             renderEventsPreview();
+            saveDraft();
         }
 
         function addEvent() {
-            defaultEvents.push({ name: "New Event", time: "Time" });
+            defaultEvents.push({ name: "New Event", date: "Date", time: "Time" });
             renderEventsForm();
             renderEventsPreview();
+            saveDraft();
         }
 
         function removeEvent(index) {
             defaultEvents.splice(index, 1);
             renderEventsForm();
             renderEventsPreview();
+            saveDraft();
         }
 
         function setMobileView(view) {
