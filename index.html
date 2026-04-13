@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Hindu Wedding Invitation Builder</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
+    
+    <!-- html2pdf for downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* --- BASE VARIABLES --- */
+        :root {
+            --ui-bg: #f8f9fa;
+            --ui-panel: #ffffff;
+            --ui-text: #333333;
+            --ui-border: #e0e0e0;
+            --ui-primary: #8b0000;
+            --ui-primary-hover: #a50000;
+            --ui-secondary: #d4af37;
+            
+            /* Default Template Variables (Royal Maroon) */
+            --tpl-bg: #fffdf5;
+            --tpl-primary: #741010;
+            --tpl-secondary: #d4af37;
+            --tpl-text: #333333;
+            --tpl-font-heading: 'Cinzel Decorative', serif;
+            --tpl-font-names: 'Great Vibes', cursive;
+            --tpl-font-body: 'Playfair Display', serif;
+            --tpl-border-style: double;
+            --tpl-bg-image: url('https://www.transparenttextures.com/patterns/handmade-paper.png');
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--ui-bg);
+            color: var(--ui-text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- LAYOUT --- */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- LEFT PANEL: EDITOR --- */
+        .editor-panel {
+            width: 450px;
+            background: var(--ui-panel);
+            border-right: 1px solid var(--ui-border);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .editor-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--ui-border);
+            background: #fff;
+            text-align: center;
+        }
+
+        .editor-header h1 {
+            font-size: 1.2rem;
+            color: var(--ui-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .editor-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Editor Sections */
+        .config-section {
+            margin-bottom: 25px;
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .config-section h3 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .input-group { margin-bottom: 12px; }
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--ui-primary);
+        }
+
+        /* Dynamic Events */
+        .event-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .event-inputs { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .event-inputs input { padding: 8px; font-size: 0.8rem; }
+        .btn-remove-event {
+            background: #ffebee;
+            color: #dc3545;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-add-event {
+            background: #e8f5e9;
+            color: #28a745;
+            border: 1px dashed #28a745;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* Actions */
+        .editor-actions {
+            padding: 20px;
+            border-top: 1px solid var(--ui-border);
+            background: #fff;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn-primary { background: var(--ui-primary); color: white; }
+        .btn-primary:hover { background: var(--ui-primary-hover); }
+        .btn-secondary { background: var(--ui-secondary); color: #000; }
+        .btn-secondary:hover { filter: brightness(0.9); }
+
+        /* --- RIGHT PANEL: PREVIEW --- */
+        .preview-panel {
+            flex: 1;
+            background: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Scaler for Responsive View */
+        .preview-scaler {
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+
+        /* --- THE INVITATION CARD (A4 Proportions) --- */
+        .patrika-card {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: var(--tpl-bg);
+            background-image: var(--tpl-bg-image);
+            padding: 15mm;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            color: var(--tpl-text);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        /* Borders */
+        .card-border-outer {
+            border: 10px var(--tpl-border-style) var(--tpl-primary);
+            height: 100%;
+            width: 100%;
+            padding: 4mm;
+            position: relative;
+        }
+        .card-border-inner {
+            border: 2px solid var(--tpl-secondary);
+            height: 100%;
+            width: 100%;
+            padding: 15mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Corner Ornaments (SVG) */
+        .corner-ornament {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            fill: var(--tpl-secondary);
+            opacity: 0.8;
+            z-index: 1;
+        }
+        .co-tl { top: -2px; left: -2px; }
+        .co-tr { top: -2px; right: -2px; transform: rotate(90deg); }
+        .co-bl { bottom: -2px; left: -2px; transform: rotate(-90deg); }
+        .co-br { bottom: -2px; right: -2px; transform: rotate(180deg); }
+
+        /* Typography inside Card */
+        .c-shloka {
+            font-family: 'Tiro Devanagari Sanskrit', serif;
+            color: var(--tpl-primary);
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .c-motif {
+            width: 80px;
+            fill: var(--tpl-primary);
+            margin: 0 auto 20px;
+            display: block;
+        }
+        .c-title {
+            font-family: var(--tpl-font-heading);
+            color: var(--tpl-secondary);
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .c-text {
+            font-family: var(--tpl-font-body);
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .c-family {
+            font-weight: 700;
+            color: var(--tpl-primary);
+            font-size: 1.2rem;
+        }
+        .c-couple-names {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .c-name {
+            font-family: var(--tpl-font-names);
+            font-size: 4.5rem;
+            color: var(--tpl-primary);
+            line-height: 1;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
+        }
+        .c-weds {
+            font-family: var(--tpl-font-heading);
+            color: var(--tpl-secondary);
+            font-size: 1.2rem;
+            margin: 15px 0;
+        }
+        
+        /* Event List Grid */
+        .c-events-container {
+            width: 100%;
+            margin: 30px 0;
+            border-top: 1px solid var(--tpl-secondary);
+            border-bottom: 1px solid var(--tpl-secondary);
+            padding: 20px 0;
+        }
+        .c-events-title {
+            font-family: var(--tpl-font-heading);
+            color: var(--tpl-primary);
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        .c-events-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        .c-event-item {
+            font-family: var(--tpl-font-body);
+        }
+        .c-event-name { font-weight: 700; color: var(--tpl-primary); font-size: 1.1rem; }
+        .c-event-time { color: var(--tpl-text); font-size: 0.95rem; }
+
+        /* Main Details */
+        .c-main-details {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .c-date {
+            font-family: var(--tpl-font-heading);
+            font-size: 1.8rem;
+            color: var(--tpl-primary);
+            font-weight: 700;
+        }
+        .c-venue {
+            font-family: var(--tpl-font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .c-rsvp {
+            margin-top: auto;
+            text-align: center;
+            font-family: var(--tpl-font-body);
+            font-size: 1rem;
+            color: var(--tpl-primary);
+            border-top: 1px dashed var(--tpl-secondary);
+            padding-top: 15px;
+            width: 80%;
+        }
+
+        /* --- THEMES (CSS Variables Override) --- */
+        
+        /* 1. Royal Gold & Maroon (Default) */
+        .theme-royal { }
+
+        /* 2. Floral Pastel */
+        .theme-floral {
+            --tpl-bg: #fff0f5;
+            --tpl-primary: #d81b60;
+            --tpl-secondary: #4caf50;
+            --tpl-text: #4a4a4a;
+            --tpl-font-heading: 'Playfair Display', serif;
+            --tpl-border-style: solid;
+            --tpl-bg-image: radial-gradient(#ffe4e1 2px, transparent 2px);
+        }
+
+        /* 3. Minimal Elegant Cream */
+        .theme-minimal {
+            --tpl-bg: #faf9f6;
+            --tpl-primary: #2f4f4f;
+            --tpl-secondary: #c0c0c0;
+            --tpl-text: #2f4f4f;
+            --tpl-font-heading: 'Montserrat', sans-serif;
+            --tpl-font-names: 'Playfair Display', serif;
+            --tpl-border-style: solid;
+            --tpl-bg-image: none;
+        }
+        
+        /* 4. Traditional Red Mandala */
+        .theme-mandala {
+            --tpl-bg: #fff5e6;
+            --tpl-primary: #cc0000;
+            --tpl-secondary: #ff8c00;
+            --tpl-text: #333;
+            --tpl-border-style: dashed;
+        }
+
+        /* 5. Modern Luxury Dark */
+        .theme-dark {
+            --tpl-bg: #1a1a1a;
+            --tpl-primary: #d4af37;
+            --tpl-secondary: #e0e0e0;
+            --tpl-text: #cccccc;
+            --tpl-font-body: 'Montserrat', sans-serif;
+            --tpl-bg-image: none;
+        }
+
+        /* 6. South Indian Temple */
+        .theme-south {
+            --tpl-bg: #ffffe0;
+            --tpl-primary: #800080; /* Purple/Maroon */
+            --tpl-secondary: #ffd700;
+            --tpl-font-heading: 'Cinzel Decorative', serif;
+            --tpl-border-style: double;
+        }
+
+        /* Decorative SVGs for specific themes */
+        .bg-mandala {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- MOBILE TABS --- */
+        .mobile-tabs {
+            display: none;
+            background: #fff;
+            border-top: 1px solid var(--ui-border);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .tab-btn.active {
+            color: var(--ui-primary);
+            border-bottom: 3px solid var(--ui-primary);
+            background: #fafafa;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; }
+            .editor-panel {
+                width: 100%;
+                height: calc(100vh - 50px);
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 100;
+            }
+            .preview-panel {
+                width: 100%;
+                height: calc(100vh - 50px);
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 20px;
+                z-index: 50;
+            }
+            .mobile-tabs { display: flex; }
+            
+            /* Toggle Classes */
+            .show-editor .editor-panel { display: flex; }
+            .show-editor .preview-panel { display: none; }
+            
+            .show-preview .editor-panel { display: none; }
+            .show-preview .preview-panel { display: flex; }
+        }
+
+        /* --- PRINT STYLES --- */
+        @media print {
+            body { background: white; overflow: visible; height: auto; }
+            .editor-panel, .mobile-tabs { display: none !important; }
+            .preview-panel { padding: 0; margin: 0; display: block; overflow: visible; background: none; }
+            .preview-scaler { transform: scale(1) !important; width: 100%; }
+            .patrika-card {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+            @page { size: A4 portrait; margin: 0; }
+        }
+    </style>
+</head>
+<body class="show-editor">
+
+    <div class="app-container">
+        
+        <!-- LEFT PANEL: EDITOR -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <h1>Patrika Builder</h1>
+            </div>
+            
+            <div class="editor-content">
+                
+                <!-- Design & Theme -->
+                <div class="config-section">
+                    <h3>Design & Theme</h3>
+                    <div class="input-group">
+                        <label>Select Template</label>
+                        <select id="in-theme">
+                            <option value="theme-royal">Royal Gold & Maroon</option>
+                            <option value="theme-floral">Floral Pastel</option>
+                            <option value="theme-minimal">Minimal Elegant Cream</option>
+                            <option value="theme-mandala">Traditional Red Mandala</option>
+                            <option value="theme-dark">Modern Luxury Dark</option>
+                            <option value="theme-south">South Indian Temple</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Auspicious Details -->
+                <div class="config-section">
+                    <h3>Auspicious Details</h3>
+                    <div class="input-group">
+                        <label>Sanskrit Shloka / Blessing</label>
+                        <textarea id="in-shloka" rows="2">॥ वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ॥
+॥ निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Wedding Title</label>
+                        <input type="text" id="in-title" value="Shubh Vivah">
+                    </div>
+                </div>
+
+                <!-- The Couple & Family -->
+                <div class="config-section">
+                    <h3>The Couple & Family</h3>
+                    <div class="input-group">
+                        <label>Groom's Name</label>
+                        <input type="text" id="in-groom" value="Arjun">
+                    </div>
+                    <div class="input-group">
+                        <label>Groom's Parents/Family</label>
+                        <input type="text" id="in-groom-family" value="Smt. & Shri Rajesh Sharma">
+                    </div>
+                    <div style="border-top: 1px dashed #ddd; margin: 15px 0;"></div>
+                    <div class="input-group">
+                        <label>Bride's Name</label>
+                        <input type="text" id="in-bride" value="Ananya">
+                    </div>
+                    <div class="input-group">
+                        <label>Bride's Parents/Family</label>
+                        <input type="text" id="in-bride-family" value="Smt. & Shri Vijay Verma">
+                    </div>
+                </div>
+
+                <!-- Main Event Details -->
+                <div class="config-section">
+                    <h3>Main Wedding Details</h3>
+                    <div class="input-group">
+                        <label>Main Wedding Date</label>
+                        <input type="text" id="in-main-date" value="Sunday, 14th December 2026">
+                    </div>
+                    <div class="input-group">
+                        <label>Main Venue / Address</label>
+                        <textarea id="in-main-venue" rows="2">The Royal Grand Palace, Udaipur, Rajasthan</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>RSVP / Contact Info</label>
+                        <input type="text" id="in-rsvp" value="RSVP: Sharma Family | +91 98765 43210">
+                    </div>
+                </div>
+
+                <!-- Schedule of Events -->
+                <div class="config-section">
+                    <h3>Schedule of Events</h3>
+                    <div id="events-list">
+                        <!-- Events will be injected here via JS -->
+                    </div>
+                    <button class="btn-add-event" onclick="addEvent()">+ Add Event</button>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="editor-actions">
+                <button class="btn btn-secondary" onclick="exportPDF()">Download PDF</button>
+                <button class="btn btn-primary" onclick="window.print()">Print A4</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: PREVIEW -->
+        <div class="preview-panel">
+            <div class="preview-scaler" id="preview-scaler">
+                <!-- THE INVITATION CARD -->
+                <div class="patrika-card theme-royal" id="patrika-card">
+                    
+                    <!-- Optional Background Mandala for specific themes -->
+                    <svg class="bg-mandala" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                        <path d="M50,5 L50,95 M5,50 L95,50 M18,18 L82,82 M18,82 L82,18" stroke="currentColor" stroke-width="0.5"/>
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                        <path d="M50,20 Q60,35 50,50 Q40,35 50,20" fill="currentColor"/>
+                        <path d="M50,80 Q60,65 50,50 Q40,65 50,80" fill="currentColor"/>
+                        <path d="M20,50 Q35,60 50,50 Q35,40 20,50" fill="currentColor"/>
+                        <path d="M80,50 Q65,60 50,50 Q65,40 80,50" fill="currentColor"/>
+                    </svg>
+
+                    <div class="card-border-outer">
+                        <div class="card-border-inner">
+                            
+                            <!-- Corners -->
+                            <svg class="corner-ornament co-tl" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
+                            <svg class="corner-ornament co-tr" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
+                            <svg class="corner-ornament co-bl" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
+                            <svg class="corner-ornament co-br" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
+
+                            <!-- Top Motif (Ganesha Image) -->
+                            <div class="c-motif-container">
+                                <img src="pngtree-ganesha-the-embodiment-of-prosperity-and-joy-png-image_20323342.png" alt="Lord Ganesha" class="c-motif-img">
+                            </div>
+
+                            <style>
+                                .c-motif-container {
+                                    text-align: center;
+                                    margin-bottom: 20px;
+                                    width: 100%;
+                                }
+                                .c-motif-img {
+                                    max-width: 150px;
+                                    height: auto;
+                                    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+                                    transition: transform 0.3s ease;
+                                }
+                                .c-motif-img:hover {
+                                    transform: scale(1.05);
+                                }
+                                @media (max-width: 600px) {
+                                    .c-motif-img {
+                                        max-width: 120px;
+                                    }
+                                }
+                            </style>
+
+                            <div class="c-shloka" id="out-shloka">॥ वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ॥<br>॥ निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥</div>
+                            
+                            <div class="c-title" id="out-title">Shubh Vivah</div>
+
+                            <div class="c-text">
+                                With the divine blessings of Almighty,<br>
+                                <span class="c-family" id="out-groom-family">Smt. & Shri Rajesh Sharma</span><br>
+                                cordially invite you to the wedding of their son
+                            </div>
+
+                            <div class="c-couple-names">
+                                <div class="c-name" id="out-groom">Arjun</div>
+                                <div class="c-weds">WEDS</div>
+                                <div class="c-name" id="out-bride">Ananya</div>
+                            </div>
+
+                            <div class="c-text">
+                                Daughter of<br>
+                                <span class="c-family" id="out-bride-family">Smt. & Shri Vijay Verma</span>
+                            </div>
+
+                            <!-- Dynamic Events Grid -->
+                            <div class="c-events-container">
+                                <div class="c-events-title">Auspicious Ceremonies</div>
+                                <div class="c-events-grid" id="out-events">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <div class="c-main-details">
+                                <div class="c-date" id="out-main-date">Sunday, 14th December 2026</div>
+                                <div class="c-venue" id="out-main-venue">The Royal Grand Palace, Udaipur, Rajasthan</div>
+                            </div>
+
+                            <div class="c-rsvp" id="out-rsvp">
+                                RSVP: Sharma Family | +91 98765 43210
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE TABS -->
+        <div class="mobile-tabs">
+            <button class="tab-btn active" id="tab-edit" onclick="setMobileView('edit')">Edit Form</button>
+            <button class="tab-btn" id="tab-preview" onclick="setMobileView('preview')">Live Preview</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA & STATE ---
+        let defaultEvents = [
+            { name: "Ganesh Puja", time: "10:00 AM" },
+            { name: "Haldi & Mehendi", time: "02:00 PM" },
+            { name: "Sangeet", time: "07:00 PM" },
+            { name: "Wedding Ceremony", time: "11:30 PM" }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const patrikaCard = document.getElementById('patrika-card');
+        const eventsListForm = document.getElementById('events-list');
+        const outEvents = document.getElementById('out-events');
+        
+        // Input mapping mapping: { inputId: outputId }
+        const simpleInputs = {
+            'in-shloka': 'out-shloka',
+            'in-title': 'out-title',
+            'in-groom': 'out-groom',
+            'in-groom-family': 'out-groom-family',
+            'in-bride': 'out-bride',
+            'in-bride-family': 'out-bride-family',
+            'in-main-date': 'out-main-date',
+            'in-main-venue': 'out-main-venue',
+            'in-rsvp': 'out-rsvp'
+        };
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Setup simple input listeners
+            for (const [inId, outId] of Object.entries(simpleInputs)) {
+                const inputEl = document.getElementById(inId);
+                const outEl = document.getElementById(outId);
+                inputEl.addEventListener('input', () => {
+                    // Handle newlines for textareas
+                    if(inputEl.tagName === 'TEXTAREA') {
+                        outEl.innerHTML = inputEl.value.replace(/\n/g, '<br>');
+                    } else {
+                        outEl.innerText = inputEl.value;
+                    }
+                });
+            }
+
+            // Setup Theme Switcher
+            document.getElementById('in-theme').addEventListener('change', (e) => {
+                patrikaCard.className = `patrika-card ${e.target.value}`;
+            });
+
+            // Render Events
+            renderEventsForm();
+            renderEventsPreview();
+            
+            // Setup Auto Scaling
+            window.addEventListener('resize', autoScalePreview);
+            setTimeout(autoScalePreview, 100);
+        }
+
+        // --- EVENTS MANAGEMENT ---
+        function renderEventsForm() {
+            eventsListForm.innerHTML = '';
+            defaultEvents.forEach((ev, index) => {
+                const item = document.createElement('div');
+                item.className = 'event-item';
+                item.innerHTML = `
+                    <div class="event-inputs">
+                        <input type="text" placeholder="Event Name" value="${ev.name}" oninput="updateEvent(${index}, 'name', this.value)">
+                        <input type="text" placeholder="Time/Details" value="${ev.time}" oninput="updateEvent(${index}, 'time', this.value)">
+                    </div>
+                    <button class="btn-remove-event" onclick="removeEvent(${index})">X</button>
+                `;
+                eventsListForm.appendChild(item);
+            });
+        }
+
+        function renderEventsPreview() {
+            outEvents.innerHTML = '';
+            defaultEvents.forEach(ev => {
+                outEvents.innerHTML += `
+                    <div class="c-event-item">
+                        <div class="c-event-name">${ev.name}</div>
+                        <div class="c-event-time">${ev.time}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateEvent(index, key, value) {
+            defaultEvents[index][key] = value;
+            renderEventsPreview();
+        }
+
+        function addEvent() {
+            defaultEvents.push({ name: "New Event", time: "Time" });
+            renderEventsForm();
+            renderEventsPreview();
+        }
+
+        function removeEvent(index) {
+            defaultEvents.splice(index, 1);
+            renderEventsForm();
+            renderEventsPreview();
+        }
+
+        // --- RESPONSIVE / MOBILE TABS ---
+        function setMobileView(view) {
+            const body = document.body;
+            const btnEdit = document.getElementById('tab-edit');
+            const btnPreview = document.getElementById('tab-preview');
+
+            if (view === 'edit') {
+                body.classList.remove('show-preview');
+                body.classList.add('show-editor');
+                btnEdit.classList.add('active');
+                btnPreview.classList.remove('active');
+            } else {
+                body.classList.remove('show-editor');
+                body.classList.add('show-preview');
+                btnPreview.classList.add('active');
+                btnEdit.classList.remove('active');
+                setTimeout(autoScalePreview, 50); // Recalculate scale after showing
+            }
+        }
+
+        function autoScalePreview() {
+            const scaler = document.getElementById('preview-scaler');
+            const previewPanel = document.querySelector('.preview-panel');
+            
+            // A4 pixel width approx 794px at 96dpi (210mm)
+            const a4WidthPx = 794; 
+            
+            let availableWidth = previewPanel.clientWidth - 40; // minus padding
+            
+            if (availableWidth < a4WidthPx) {
+                const scale = availableWidth / a4WidthPx;
+                scaler.style.transform = `scale(${scale})`;
+            } else {
+                // Optional: scale down slightly on desktop if height is too tall
+                const availableHeight = previewPanel.clientHeight - 40;
+                const a4HeightPx = 1122; // 297mm
+                if(availableHeight < a4HeightPx) {
+                    const scaleHeight = availableHeight / a4HeightPx;
+                    scaler.style.transform = `scale(${Math.min(scaleHeight, 0.9)})`;
+                } else {
+                    scaler.style.transform = `scale(1)`;
+                }
+            }
+        }
+
+        // --- EXPORT PDF ---
+        function exportPDF() {
+            const element = document.getElementById('patrika-card');
+            const opt = {
+                margin: 0,
+                filename: 'Hindu_Wedding_Patrika.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Temporarily reset transform for clean render
+            const scaler = document.getElementById('preview-scaler');
+            const oldTransform = scaler.style.transform;
+            scaler.style.transform = 'scale(1)';
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                scaler.style.transform = oldTransform;
+            });
+        }
+
+        // Start App
+        init();
+
+    </script>
+</body>
+</html>
