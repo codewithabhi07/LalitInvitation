@@ -860,20 +860,43 @@
         // --- EXPORT PDF ---
         function exportPDF() {
             const element = document.getElementById('patrika-card');
+            const previewPanel = document.querySelector('.preview-panel');
+            const scaler = document.getElementById('preview-scaler');
+            
+            // Ensure preview is visible for capture (especially on mobile)
+            const wasHidden = getComputedStyle(previewPanel).display === 'none';
+            if (wasHidden) {
+                previewPanel.style.display = 'flex';
+                previewPanel.style.visibility = 'hidden'; // Keep invisible but in layout
+            }
+
             const opt = {
                 margin: 0,
                 filename: 'Hindu_Wedding_Patrika.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                html2canvas: { 
+                    scale: 3, 
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            // Temporarily reset transform for clean render
-            const scaler = document.getElementById('preview-scaler');
+            // Reset transform for clean render
             const oldTransform = scaler.style.transform;
             scaler.style.transform = 'scale(1)';
             
             html2pdf().set(opt).from(element).save().then(() => {
+                // Restore state
+                scaler.style.transform = oldTransform;
+                if (wasHidden) {
+                    previewPanel.style.display = '';
+                    previewPanel.style.visibility = '';
+                }
+            }).catch(err => {
+                console.error('PDF Export Error:', err);
+                alert('Could not generate PDF. Please try the Print option.');
                 scaler.style.transform = oldTransform;
             });
         }
