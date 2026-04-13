@@ -6,7 +6,7 @@
     <title>Premium Hindu Wedding Invitation Builder</title>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
     
     <!-- html2pdf for downloading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -14,24 +14,25 @@
     <style>
         /* --- BASE VARIABLES --- */
         :root {
-            --ui-bg: #f8f9fa;
-            --ui-panel: #ffffff;
-            --ui-text: #333333;
-            --ui-border: #e0e0e0;
-            --ui-primary: #8b0000;
-            --ui-primary-hover: #a50000;
-            --ui-secondary: #d4af37;
+            --ui-bg: #0a0a0a;
+            --ui-panel: #151515;
+            --ui-text: #e0e0e0;
+            --ui-border: #2a2a2a;
+            --ui-primary: #ff3333;
+            --ui-secondary: #ffd700;
             
             /* Default Template Variables (Royal Maroon) */
-            --tpl-bg: #fffdf5;
-            --tpl-primary: #741010;
+            --tpl-bg: #fffcf0;
+            --tpl-primary: #800000;
             --tpl-secondary: #d4af37;
-            --tpl-text: #333333;
+            --tpl-accent: #ff9933;
+            --tpl-text: #2c3e50;
             --tpl-font-heading: 'Cinzel Decorative', serif;
             --tpl-font-names: 'Great Vibes', cursive;
             --tpl-font-body: 'Playfair Display', serif;
             --tpl-border-style: double;
             --tpl-bg-image: url('https://www.transparenttextures.com/patterns/handmade-paper.png');
+            --gold-gradient: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,140 +57,134 @@
         .editor-panel {
             width: 450px;
             background: var(--ui-panel);
-            border-right: 1px solid var(--ui-border);
+            border-right: 2px solid var(--tpl-secondary);
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
             z-index: 10;
             transition: transform 0.3s ease;
         }
 
         .editor-header {
-            padding: 20px;
+            padding: 25px;
             border-bottom: 1px solid var(--ui-border);
-            background: #fff;
+            background: #111;
             text-align: center;
         }
 
         .editor-header h1 {
-            font-size: 1.2rem;
-            color: var(--ui-primary);
+            font-size: 1.4rem;
+            color: var(--ui-secondary);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            letter-spacing: 2px;
+            font-weight: 700;
+            font-family: 'Cinzel Decorative', serif;
         }
 
         .editor-content {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 25px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--tpl-secondary) #111;
         }
 
-        /* Editor Sections */
         .config-section {
-            margin-bottom: 25px;
-            background: #fdfdfd;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 15px;
+            margin-bottom: 30px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .config-section h3 {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--tpl-accent);
+            margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            letter-spacing: 1.5px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+            font-weight: 700;
         }
 
-        .input-group { margin-bottom: 12px; }
+        .input-group { margin-bottom: 15px; }
         .input-group label {
             display: block;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-bottom: 5px;
-            color: #555;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #bbb;
         }
+        
         .input-group input, .input-group textarea, .input-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
             font-family: inherit;
-            font-size: 0.9rem;
-            transition: border-color 0.2s;
+            font-size: 0.95rem;
+            transition: all 0.3s;
         }
+        
         .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
             outline: none;
-            border-color: var(--ui-primary);
+            border-color: var(--tpl-secondary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* Dynamic Events */
-        .event-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-            background: #fff;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-        }
-        .event-inputs { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        .event-inputs input { padding: 8px; font-size: 0.8rem; }
-        .btn-remove-event {
-            background: #ffebee;
-            color: #dc3545;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
         .btn-add-event {
-            background: #e8f5e9;
-            color: #28a745;
-            border: 1px dashed #28a745;
-            padding: 10px;
+            background: #1b5e20;
+            color: #fff;
+            border: 1px solid #2e7d32;
+            padding: 12px;
             width: 100%;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            margin-top: 5px;
+            font-weight: 700;
+            margin-top: 10px;
+            transition: 0.3s;
         }
 
-        /* Actions */
         .editor-actions {
-            padding: 20px;
+            padding: 25px;
             border-top: 1px solid var(--ui-border);
-            background: #fff;
+            background: #111;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 15px;
         }
+        
         .btn {
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 4px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            transition: all 0.2s;
+            font-size: 0.85rem;
+            transition: all 0.3s;
             text-align: center;
         }
-        .btn-primary { background: var(--ui-primary); color: white; }
-        .btn-primary:hover { background: var(--ui-primary-hover); }
-        .btn-secondary { background: var(--ui-secondary); color: #000; }
-        .btn-secondary:hover { filter: brightness(0.9); }
+        
+        .btn-primary { 
+            background: linear-gradient(45deg, var(--tpl-primary), #b71c1c);
+            color: white; 
+            box-shadow: 0 4px 15px rgba(128, 0, 0, 0.4);
+        }
+        .btn-secondary { 
+            background: var(--gold-gradient);
+            color: #000; 
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
 
         /* --- RIGHT PANEL: PREVIEW --- */
         .preview-panel {
             flex: 1;
-            background: #e9ecef;
+            background: #000;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -198,20 +193,16 @@
             position: relative;
         }
 
-        /* Scaler for Responsive View */
-        .preview-scaler {
-            transform-origin: top center;
-            transition: transform 0.3s ease;
-        }
+        .preview-scaler { transform-origin: top center; transition: transform 0.3s ease; }
 
-        /* --- THE INVITATION CARD (A4 Proportions) --- */
+        /* --- THE INVITATION CARD --- */
         .patrika-card {
             width: 210mm;
             min-height: 297mm;
             background-color: var(--tpl-bg);
             background-image: var(--tpl-bg-image);
-            padding: 15mm;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            padding: 12mm;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             position: relative;
             color: var(--tpl-text);
             display: flex;
@@ -220,16 +211,16 @@
             transition: all 0.5s ease;
         }
 
-        /* Borders */
         .card-border-outer {
-            border: 10px var(--tpl-border-style) var(--tpl-primary);
+            border: 15px var(--tpl-border-style) var(--tpl-primary);
             height: 100%;
             width: 100%;
-            padding: 4mm;
+            padding: 5mm;
             position: relative;
         }
+
         .card-border-inner {
-            border: 2px solid var(--tpl-secondary);
+            border: 3px solid var(--tpl-secondary);
             height: 100%;
             width: 100%;
             padding: 15mm;
@@ -238,269 +229,260 @@
             align-items: center;
             position: relative;
             z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Corner Ornaments (SVG) */
-        .corner-ornament {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            fill: var(--tpl-secondary);
-            opacity: 0.8;
-            z-index: 1;
-        }
-        .co-tl { top: -2px; left: -2px; }
-        .co-tr { top: -2px; right: -2px; transform: rotate(90deg); }
-        .co-bl { bottom: -2px; left: -2px; transform: rotate(-90deg); }
-        .co-br { bottom: -2px; right: -2px; transform: rotate(180deg); }
-
-        /* Typography inside Card */
-        .c-shloka {
-            font-family: 'Tiro Devanagari Sanskrit', serif;
-            color: var(--tpl-primary);
-            font-size: 1.1rem;
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        .c-motif {
-            width: 80px;
-            fill: var(--tpl-primary);
-            margin: 0 auto 20px;
-            display: block;
-        }
-        .c-title {
-            font-family: var(--tpl-font-heading);
-            color: var(--tpl-secondary);
-            font-size: 1.5rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .c-text {
-            font-family: var(--tpl-font-body);
-            font-size: 1.1rem;
-            text-align: center;
-            line-height: 1.6;
-            margin: 10px 0;
-        }
-        .c-family {
-            font-weight: 700;
-            color: var(--tpl-primary);
-            font-size: 1.2rem;
-        }
-        .c-couple-names {
-            margin: 30px 0;
-            text-align: center;
-        }
-        .c-name {
-            font-family: var(--tpl-font-names);
-            font-size: 4.5rem;
-            color: var(--tpl-primary);
-            line-height: 1;
-            text-shadow: 1px 1px 0px rgba(0,0,0,0.05);
-        }
-        .c-weds {
-            font-family: var(--tpl-font-heading);
-            color: var(--tpl-secondary);
-            font-size: 1.2rem;
-            margin: 15px 0;
-        }
-        
-        /* Event List Grid */
-        .c-events-container {
-            width: 100%;
-            margin: 30px 0;
-            border-top: 1px solid var(--tpl-secondary);
-            border-bottom: 1px solid var(--tpl-secondary);
-            padding: 20px 0;
-        }
-        .c-events-title {
-            font-family: var(--tpl-font-heading);
-            color: var(--tpl-primary);
-            text-align: center;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-        }
-        .c-events-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            text-align: center;
-        }
-        .c-event-item {
-            font-family: var(--tpl-font-body);
-        }
-        .c-event-name { font-weight: 700; color: var(--tpl-primary); font-size: 1.1rem; }
-        .c-event-time { color: var(--tpl-text); font-size: 0.95rem; }
-
-        /* Main Details */
-        .c-main-details {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .c-date {
-            font-family: var(--tpl-font-heading);
-            font-size: 1.8rem;
-            color: var(--tpl-primary);
-            font-weight: 700;
-        }
-        .c-venue {
-            font-family: var(--tpl-font-body);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        .c-rsvp {
-            margin-top: auto;
-            text-align: center;
-            font-family: var(--tpl-font-body);
-            font-size: 1rem;
-            color: var(--tpl-primary);
-            border-top: 1px dashed var(--tpl-secondary);
-            padding-top: 15px;
-            width: 80%;
-        }
-
-        /* --- THEMES (CSS Variables Override) --- */
-        
-        /* 1. Royal Gold & Maroon (Default) */
-        .theme-royal { }
-
-        /* 2. Floral Pastel */
-        .theme-floral {
-            --tpl-bg: #fff0f5;
-            --tpl-primary: #d81b60;
-            --tpl-secondary: #4caf50;
-            --tpl-text: #4a4a4a;
-            --tpl-font-heading: 'Playfair Display', serif;
-            --tpl-border-style: solid;
-            --tpl-bg-image: radial-gradient(#ffe4e1 2px, transparent 2px);
-        }
-
-        /* 3. Minimal Elegant Cream */
-        .theme-minimal {
-            --tpl-bg: #faf9f6;
-            --tpl-primary: #2f4f4f;
-            --tpl-secondary: #c0c0c0;
-            --tpl-text: #2f4f4f;
-            --tpl-font-heading: 'Montserrat', sans-serif;
-            --tpl-font-names: 'Playfair Display', serif;
-            --tpl-border-style: solid;
-            --tpl-bg-image: none;
-        }
-        
-        /* 4. Traditional Red Mandala */
-        .theme-mandala {
-            --tpl-bg: #fff5e6;
-            --tpl-primary: #cc0000;
-            --tpl-secondary: #ff8c00;
-            --tpl-text: #333;
-            --tpl-border-style: dashed;
-        }
-
-        /* 5. Modern Luxury Dark */
-        .theme-dark {
-            --tpl-bg: #1a1a1a;
-            --tpl-primary: #d4af37;
-            --tpl-secondary: #e0e0e0;
-            --tpl-text: #cccccc;
-            --tpl-font-body: 'Montserrat', sans-serif;
-            --tpl-bg-image: none;
-        }
-
-        /* 6. South Indian Temple */
-        .theme-south {
-            --tpl-bg: #ffffe0;
-            --tpl-primary: #800080; /* Purple/Maroon */
-            --tpl-secondary: #ffd700;
-            --tpl-font-heading: 'Cinzel Decorative', serif;
-            --tpl-border-style: double;
-        }
-
-        /* Decorative SVGs for specific themes */
         .bg-mandala {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80%;
-            opacity: 0.05;
+            width: 130%;
+            opacity: 0.07;
             z-index: 0;
             pointer-events: none;
+            color: var(--tpl-primary);
+            animation: rotateMandala 100s linear infinite;
         }
 
-        /* --- MOBILE TABS --- */
-        .mobile-tabs {
-            display: none;
-            background: #fff;
-            border-top: 1px solid var(--ui-border);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 1000;
+        @keyframes rotateMandala {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
+
+        .corner-ornament {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            fill: var(--tpl-secondary);
+            opacity: 0.9;
+            z-index: 1;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        .co-tl { top: -5px; left: -5px; }
+        .co-tr { top: -5px; right: -5px; transform: rotate(90deg); }
+        .co-bl { bottom: -5px; left: -5px; transform: rotate(-90deg); }
+        .co-br { bottom: -5px; right: -5px; transform: rotate(180deg); }
+
+        .c-motif-container { text-align: center; margin-bottom: 10px; width: 100%; }
+        .c-motif-img {
+            max-width: 140px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            margin-bottom: 10px;
+            transition: 0.5s ease;
+        }
+        .c-motif-img:hover { transform: scale(1.1); }
+
+        .c-footer-motif-container { margin-top: auto; text-align: center; width: 100%; margin-bottom: 20px; }
+        .c-footer-motif-img {
+            max-width: 350px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            transition: 0.5s ease;
+        }
+        .c-footer-motif-img:hover { transform: translateY(-5px); }
+
+        .c-shloka {
+            font-family: 'Tiro Devanagari Sanskrit', serif;
+            color: var(--tpl-primary);
+            font-size: 1.15rem;
             text-align: center;
-            background: none;
-            border: none;
-            font-weight: 600;
-            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .c-title {
+            font-family: var(--tpl-font-heading);
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.8rem;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-        .tab-btn.active {
-            color: var(--ui-primary);
-            border-bottom: 3px solid var(--ui-primary);
-            background: #fafafa;
+            margin-bottom: 25px;
+            font-weight: 900;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
         }
 
-        /* --- RESPONSIVE --- */
+        .c-name {
+            font-family: var(--tpl-font-names);
+            font-size: 6.5rem;
+            color: var(--tpl-primary);
+            line-height: 1;
+            text-shadow: 2px 2px 0px var(--tpl-secondary);
+        }
+
+        .c-weds {
+            font-family: var(--tpl-font-heading);
+            color: var(--tpl-accent);
+            font-size: 1.6rem;
+            margin: 25px 0;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+
+        .c-family { font-weight: 700; color: var(--tpl-primary); font-size: 1.3rem; }
+
+        .c-events-container {
+            width: 100%;
+            margin: 40px 0;
+            border-top: 2px solid var(--tpl-secondary);
+            border-bottom: 2px solid var(--tpl-secondary);
+            padding: 30px 0;
+            background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.05), transparent);
+        }
+
+        .c-events-title {
+            font-family: var(--tpl-font-heading);
+            color: var(--tpl-primary);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .c-events-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .c-event-name { font-weight: 800; color: var(--tpl-primary); font-size: 1.4rem; text-transform: uppercase; }
+        .c-event-time { color: var(--tpl-text); font-size: 1.1rem; font-weight: 500; }
+
+        .c-date {
+            font-family: var(--tpl-font-heading);
+            font-size: 2.6rem;
+            color: var(--tpl-primary);
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .c-venue {
+            font-family: var(--tpl-font-body);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--tpl-text);
+        }
+
+        .c-rsvp {
+            margin-top: auto;
+            text-align: center;
+            font-family: var(--tpl-font-body);
+            font-size: 1.3rem;
+            color: var(--tpl-primary);
+            border-top: 2px dashed var(--tpl-secondary);
+            padding-top: 20px;
+            width: 90%;
+            font-weight: 700;
+        }
+
+        /* --- THEMES (Enhanced Color Palettes) --- */
+        .theme-royal { }
+        .theme-floral {
+            --tpl-bg: #fff5f8;
+            --tpl-primary: #e91e63;
+            --tpl-secondary: #4caf50;
+            --tpl-accent: #ff80ab;
+            --tpl-text: #4a4a4a;
+            --gold-gradient: linear-gradient(45deg, #e91e63, #f06292);
+        }
+        .theme-minimal {
+            --tpl-bg: #faf9f6;
+            --tpl-primary: #2c3e50;
+            --tpl-secondary: #bdc3c7;
+            --tpl-accent: #34495e;
+            --tpl-text: #2c3e50;
+            --gold-gradient: linear-gradient(45deg, #2c3e50, #7f8c8d);
+        }
+        .theme-mandala {
+            --tpl-bg: #fffbf0;
+            --tpl-primary: #d32f2f;
+            --tpl-secondary: #ffa000;
+            --tpl-accent: #f4511e;
+            --tpl-text: #3e2723;
+            --gold-gradient: linear-gradient(45deg, #d32f2f, #f4511e);
+        }
+        .theme-dark {
+            --tpl-bg: #0f0f0f;
+            --tpl-primary: #d4af37;
+            --tpl-secondary: #ffffff;
+            --tpl-accent: #ffd700;
+            --tpl-text: #e0e0e0;
+            --gold-gradient: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --tpl-bg-image: none;
+        }
+        .theme-south {
+            --tpl-bg: #ffffe0;
+            --tpl-primary: #4a148c;
+            --tpl-secondary: #ffab00;
+            --tpl-accent: #c2185b;
+            --gold-gradient: linear-gradient(45deg, #4a148c, #c2185b);
+        }
+
+        /* --- MOBILE --- */
         @media (max-width: 900px) {
-            .app-container { flex-direction: column; }
-            .editor-panel {
-                width: 100%;
-                height: calc(100vh - 50px);
-                position: absolute;
-                top: 0;
+            .app-container { flex-direction: column; overflow: hidden; }
+            .editor-panel { 
+                width: 100%; 
+                height: calc(100vh - 60px); 
+                position: fixed; 
+                top: 0; 
                 left: 0;
-                z-index: 100;
+                border-right: none; 
+                z-index: 10;
             }
-            .preview-panel {
-                width: 100%;
-                height: calc(100vh - 50px);
-                position: absolute;
-                top: 0;
+            .preview-panel { 
+                width: 100%; 
+                height: calc(100vh - 60px); 
+                position: fixed; 
+                top: 0; 
                 left: 0;
-                padding: 20px;
-                z-index: 50;
+                padding: 10px; 
+                background: #000;
+                z-index: 5;
             }
-            .mobile-tabs { display: flex; }
+            .mobile-tabs { 
+                display: flex; 
+                height: 60px; 
+                position: fixed; 
+                bottom: 0; 
+                left: 0;
+                width: 100%; 
+                background: #111; 
+                z-index: 1000; 
+                border-top: 2px solid var(--tpl-secondary); 
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            }
+            .tab-btn { 
+                flex: 1; 
+                border: none; 
+                background: none; 
+                color: #888; 
+                font-weight: 700; 
+                font-size: 0.9rem; 
+                text-transform: uppercase; 
+                cursor: pointer; 
+                transition: 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .tab-btn.active { color: var(--tpl-secondary); background: #222; border-top: 3px solid var(--tpl-secondary); }
             
-            /* Toggle Classes */
-            .show-editor .editor-panel { display: flex; }
-            .show-editor .preview-panel { display: none; }
-            
-            .show-preview .editor-panel { display: none; }
-            .show-preview .preview-panel { display: flex; }
+            .show-editor .editor-panel { display: flex; visibility: visible; }
+            .show-editor .preview-panel { display: none; visibility: hidden; }
+            .show-preview .editor-panel { display: none; visibility: hidden; }
+            .show-preview .preview-panel { display: flex; visibility: visible; }
+
+            .patrika-card {
+                padding: 5mm; /* Reduced padding for mobile view */
+            }
         }
 
-        /* --- PRINT STYLES --- */
+        /* --- PRINT --- */
         @media print {
-            body { background: white; overflow: visible; height: auto; }
+            body { background: white !important; overflow: visible !important; height: auto !important; }
             .editor-panel, .mobile-tabs { display: none !important; }
-            .preview-panel { padding: 0; margin: 0; display: block; overflow: visible; background: none; }
-            .preview-scaler { transform: scale(1) !important; width: 100%; }
-            .patrika-card {
-                box-shadow: none;
-                margin: 0;
-                width: 210mm;
-                height: 297mm;
-                page-break-after: always;
-            }
+            .preview-panel { display: flex !important; visibility: visible !important; padding: 0 !important; width: 100% !important; background: none !important; position: static !important; }
+            .preview-scaler { transform: scale(1) !important; width: 100% !important; }
+            .patrika-card { box-shadow: none !important; width: 210mm !important; height: 297mm !important; }
             @page { size: A4 portrait; margin: 0; }
         }
     </style>
@@ -533,6 +515,32 @@
                     </div>
                 </div>
 
+                <!-- Advanced Customization -->
+                <div class="config-section">
+                    <h3>Advanced Styling</h3>
+                    <div class="input-group">
+                        <label>Background Color</label>
+                        <input type="color" id="in-bg-color" value="#fffcf0">
+                    </div>
+                    <div class="input-group">
+                        <label>Primary Theme Color</label>
+                        <input type="color" id="in-primary-color" value="#800000">
+                    </div>
+                    <div class="input-group">
+                        <label>Secondary Theme Color</label>
+                        <input type="color" id="in-secondary-color" value="#d4af37">
+                    </div>
+                    <div class="input-group">
+                        <label>Card Background Texture</label>
+                        <select id="in-bg-texture">
+                            <option value="url('https://www.transparenttextures.com/patterns/handmade-paper.png')">Handmade Paper</option>
+                            <option value="url('https://www.transparenttextures.com/patterns/cream-paper.png')">Cream Paper</option>
+                            <option value="url('https://www.transparenttextures.com/patterns/parchment.png')">Parchment</option>
+                            <option value="none">Solid Color</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Auspicious Details -->
                 <div class="config-section">
                     <h3>Auspicious Details</h3>
@@ -558,7 +566,7 @@
                         <label>Groom's Parents/Family</label>
                         <input type="text" id="in-groom-family" value="Smt. & Shri Rajesh Sharma">
                     </div>
-                    <div style="border-top: 1px dashed #ddd; margin: 15px 0;"></div>
+                    <div style="border-top: 1px dashed #444; margin: 15px 0;"></div>
                     <div class="input-group">
                         <label>Bride's Name</label>
                         <input type="text" id="in-bride" value="Ananya">
@@ -589,9 +597,7 @@
                 <!-- Schedule of Events -->
                 <div class="config-section">
                     <h3>Schedule of Events</h3>
-                    <div id="events-list">
-                        <!-- Events will be injected here via JS -->
-                    </div>
+                    <div id="events-list"></div>
                     <button class="btn-add-event" onclick="addEvent()">+ Add Event</button>
                 </div>
 
@@ -607,10 +613,8 @@
         <!-- RIGHT PANEL: PREVIEW -->
         <div class="preview-panel">
             <div class="preview-scaler" id="preview-scaler">
-                <!-- THE INVITATION CARD -->
                 <div class="patrika-card theme-royal" id="patrika-card">
                     
-                    <!-- Optional Background Mandala for specific themes -->
                     <svg class="bg-mandala" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="0.5"/>
                         <path d="M50,5 L50,95 M5,50 L95,50 M18,18 L82,82 M18,82 L82,18" stroke="currentColor" stroke-width="0.5"/>
@@ -624,38 +628,14 @@
                     <div class="card-border-outer">
                         <div class="card-border-inner">
                             
-                            <!-- Corners -->
                             <svg class="corner-ornament co-tl" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
                             <svg class="corner-ornament co-tr" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
                             <svg class="corner-ornament co-bl" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
                             <svg class="corner-ornament co-br" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,10 L10,10 L10,100 L0,100 Z M20,20 L80,20 L80,25 L25,25 L25,80 L20,80 Z"/></svg>
 
-                            <!-- Top Motif (Ganesha Image) -->
                             <div class="c-motif-container">
-                                <img src="pngtree-ganesha-the-embodiment-of-prosperity-and-joy-png-image_20323342.png" alt="Lord Ganesha" class="c-motif-img">
+                                <img src="Ganesh.png" alt="Lord Ganesha" class="c-motif-img">
                             </div>
-
-                            <style>
-                                .c-motif-container {
-                                    text-align: center;
-                                    margin-bottom: 20px;
-                                    width: 100%;
-                                }
-                                .c-motif-img {
-                                    max-width: 150px;
-                                    height: auto;
-                                    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
-                                    transition: transform 0.3s ease;
-                                }
-                                .c-motif-img:hover {
-                                    transform: scale(1.05);
-                                }
-                                @media (max-width: 600px) {
-                                    .c-motif-img {
-                                        max-width: 120px;
-                                    }
-                                }
-                            </style>
 
                             <div class="c-shloka" id="out-shloka">॥ वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ ॥<br>॥ निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा ॥</div>
                             
@@ -678,12 +658,9 @@
                                 <span class="c-family" id="out-bride-family">Smt. & Shri Vijay Verma</span>
                             </div>
 
-                            <!-- Dynamic Events Grid -->
                             <div class="c-events-container">
                                 <div class="c-events-title">Auspicious Ceremonies</div>
-                                <div class="c-events-grid" id="out-events">
-                                    <!-- Populated by JS -->
-                                </div>
+                                <div class="c-events-grid" id="out-events"></div>
                             </div>
 
                             <div class="c-main-details">
@@ -691,8 +668,10 @@
                                 <div class="c-venue" id="out-main-venue">The Royal Grand Palace, Udaipur, Rajasthan</div>
                             </div>
 
-                            <div class="c-rsvp" id="out-rsvp">
-                                RSVP: Sharma Family | +91 98765 43210
+                            <div class="c-rsvp" id="out-rsvp">RSVP: Sharma Family | +91 98765 43210</div>
+
+                            <div class="c-footer-motif-container">
+                                <img src="barat.png" alt="Barat" class="c-footer-motif-img">
                             </div>
 
                         </div>
@@ -701,7 +680,6 @@
             </div>
         </div>
 
-        <!-- MOBILE TABS -->
         <div class="mobile-tabs">
             <button class="tab-btn active" id="tab-edit" onclick="setMobileView('edit')">Edit Form</button>
             <button class="tab-btn" id="tab-preview" onclick="setMobileView('preview')">Live Preview</button>
@@ -710,7 +688,6 @@
     </div>
 
     <script>
-        // --- DATA & STATE ---
         let defaultEvents = [
             { name: "Ganesh Puja", time: "10:00 AM" },
             { name: "Haldi & Mehendi", time: "02:00 PM" },
@@ -718,12 +695,10 @@
             { name: "Wedding Ceremony", time: "11:30 PM" }
         ];
 
-        // --- DOM ELEMENTS ---
         const patrikaCard = document.getElementById('patrika-card');
         const eventsListForm = document.getElementById('events-list');
         const outEvents = document.getElementById('out-events');
         
-        // Input mapping mapping: { inputId: outputId }
         const simpleInputs = {
             'in-shloka': 'out-shloka',
             'in-title': 'out-title',
@@ -736,14 +711,11 @@
             'in-rsvp': 'out-rsvp'
         };
 
-        // --- INITIALIZATION ---
         function init() {
-            // Setup simple input listeners
             for (const [inId, outId] of Object.entries(simpleInputs)) {
                 const inputEl = document.getElementById(inId);
                 const outEl = document.getElementById(outId);
                 inputEl.addEventListener('input', () => {
-                    // Handle newlines for textareas
                     if(inputEl.tagName === 'TEXTAREA') {
                         outEl.innerHTML = inputEl.value.replace(/\n/g, '<br>');
                     } else {
@@ -752,32 +724,42 @@
                 });
             }
 
-            // Setup Theme Switcher
             document.getElementById('in-theme').addEventListener('change', (e) => {
                 patrikaCard.className = `patrika-card ${e.target.value}`;
             });
 
-            // Render Events
+            // Advanced Styling
+            document.getElementById('in-bg-color').addEventListener('input', (e) => {
+                patrikaCard.style.setProperty('--tpl-bg', e.target.value);
+            });
+            document.getElementById('in-primary-color').addEventListener('input', (e) => {
+                patrikaCard.style.setProperty('--tpl-primary', e.target.value);
+            });
+            document.getElementById('in-secondary-color').addEventListener('input', (e) => {
+                patrikaCard.style.setProperty('--tpl-secondary', e.target.value);
+            });
+            document.getElementById('in-bg-texture').addEventListener('change', (e) => {
+                patrikaCard.style.setProperty('--tpl-bg-image', e.target.value);
+            });
+
             renderEventsForm();
             renderEventsPreview();
-            
-            // Setup Auto Scaling
             window.addEventListener('resize', autoScalePreview);
             setTimeout(autoScalePreview, 100);
         }
 
-        // --- EVENTS MANAGEMENT ---
         function renderEventsForm() {
             eventsListForm.innerHTML = '';
             defaultEvents.forEach((ev, index) => {
                 const item = document.createElement('div');
                 item.className = 'event-item';
+                item.style = 'display:flex; gap:10px; margin-bottom:10px; background:#111; padding:10px; border-radius:8px; border:1px solid #333;';
                 item.innerHTML = `
-                    <div class="event-inputs">
-                        <input type="text" placeholder="Event Name" value="${ev.name}" oninput="updateEvent(${index}, 'name', this.value)">
-                        <input type="text" placeholder="Time/Details" value="${ev.time}" oninput="updateEvent(${index}, 'time', this.value)">
+                    <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+                        <input type="text" value="${ev.name}" oninput="updateEvent(${index}, 'name', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
+                        <input type="text" value="${ev.time}" oninput="updateEvent(${index}, 'time', this.value)" style="padding:8px; background:#000; border:1px solid #444; color:white; border-radius:4px;">
                     </div>
-                    <button class="btn-remove-event" onclick="removeEvent(${index})">X</button>
+                    <button onclick="removeEvent(${index})" style="background:#4a148c; color:white; border:none; width:30px; height:30px; border-radius:4px; cursor:pointer;">X</button>
                 `;
                 eventsListForm.appendChild(item);
             });
@@ -812,12 +794,10 @@
             renderEventsPreview();
         }
 
-        // --- RESPONSIVE / MOBILE TABS ---
         function setMobileView(view) {
             const body = document.body;
             const btnEdit = document.getElementById('tab-edit');
             const btnPreview = document.getElementById('tab-preview');
-
             if (view === 'edit') {
                 body.classList.remove('show-preview');
                 body.classList.add('show-editor');
@@ -828,82 +808,45 @@
                 body.classList.add('show-preview');
                 btnPreview.classList.add('active');
                 btnEdit.classList.remove('active');
-                setTimeout(autoScalePreview, 50); // Recalculate scale after showing
+                setTimeout(autoScalePreview, 50);
             }
         }
 
         function autoScalePreview() {
             const scaler = document.getElementById('preview-scaler');
             const previewPanel = document.querySelector('.preview-panel');
-            
-            // A4 pixel width approx 794px at 96dpi (210mm)
             const a4WidthPx = 794; 
-            
-            let availableWidth = previewPanel.clientWidth - 40; // minus padding
-            
+            let availableWidth = previewPanel.clientWidth - 40;
             if (availableWidth < a4WidthPx) {
                 const scale = availableWidth / a4WidthPx;
                 scaler.style.transform = `scale(${scale})`;
             } else {
-                // Optional: scale down slightly on desktop if height is too tall
-                const availableHeight = previewPanel.clientHeight - 40;
-                const a4HeightPx = 1122; // 297mm
-                if(availableHeight < a4HeightPx) {
-                    const scaleHeight = availableHeight / a4HeightPx;
-                    scaler.style.transform = `scale(${Math.min(scaleHeight, 0.9)})`;
-                } else {
-                    scaler.style.transform = `scale(1)`;
-                }
+                scaler.style.transform = `scale(0.85)`;
             }
         }
 
-        // --- EXPORT PDF ---
         function exportPDF() {
             const element = document.getElementById('patrika-card');
             const previewPanel = document.querySelector('.preview-panel');
             const scaler = document.getElementById('preview-scaler');
-            
-            // Ensure preview is visible for capture (especially on mobile)
             const wasHidden = getComputedStyle(previewPanel).display === 'none';
-            if (wasHidden) {
-                previewPanel.style.display = 'flex';
-                previewPanel.style.visibility = 'hidden'; // Keep invisible but in layout
-            }
-
+            if (wasHidden) { previewPanel.style.display = 'flex'; previewPanel.style.visibility = 'hidden'; }
             const opt = {
                 margin: 0,
                 filename: 'Hindu_Wedding_Patrika.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 3, 
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false
-                },
+                html2canvas: { scale: 3, useCORS: true, letterRendering: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            
-            // Reset transform for clean render
             const oldTransform = scaler.style.transform;
             scaler.style.transform = 'scale(1)';
-            
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restore state
                 scaler.style.transform = oldTransform;
-                if (wasHidden) {
-                    previewPanel.style.display = '';
-                    previewPanel.style.visibility = '';
-                }
-            }).catch(err => {
-                console.error('PDF Export Error:', err);
-                alert('Could not generate PDF. Please try the Print option.');
-                scaler.style.transform = oldTransform;
+                if (wasHidden) { previewPanel.style.display = ''; previewPanel.style.visibility = ''; }
             });
         }
 
-        // Start App
         init();
-
     </script>
 </body>
 </html>
